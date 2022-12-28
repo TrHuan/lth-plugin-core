@@ -9,14 +9,14 @@
  * that starts the plugin.
  *
  * @link              https://http://lth90.42web.io/
- * @since             2.0.0
+ * @since             3.0.0
  * @package           Lth_Core
  *
  * @wordpress-plugin
  * Plugin Name:       LTH Core
  * Plugin URI:        https://http://lth90.42web.io/
  * Description:       This is a description of the plugin.
- * Version:           2.0.0
+ * Version:           3.0.0
  * Author:            LTH
  * Author URI:        https://http://lth90.42web.io/
  * License:           GPL-2.0+
