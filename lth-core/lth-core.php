@@ -9,21 +9,22 @@
  * that starts the plugin.
  *
  * @link              https://http://lth90.42web.io/
- * @since             3.0.0
+ * @since             2.0.0
  * @package           Lth_Core
  *
  * @wordpress-plugin
  * Plugin Name:       LTH Core
  * Plugin URI:        https://http://lth90.42web.io/
  * Description:       This is a description of the plugin.
- * Version:           3.0.0
+ * Version:           2.0.0
  * Author:            LTH
  * Author URI:        https://http://lth90.42web.io/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       lth-core
  * Domain Path:       /languages
- * GitHub Theme URI: https://github.com/TrHuan/lth/blob/main/plugin-core/updater/lth-core
+ * GitHub Theme URI: TrHuan/lth-plugin-core
+ * GitHub Theme URI: hthttps://github.com/TrHuan/lth-plugin-core
  */
 
 // If this file is called directly, abort.
@@ -62,159 +63,179 @@ register_activation_hook(__FILE__, 'activate_lth_core');
 register_deactivation_hook(__FILE__, 'deactivate_lth_core');
 
 // Update plugin
-if (!class_exists('lth_core_update')) {
-	class lth_core_update
-	{
+// if (!class_exists('lth_core_update')) {
+// 	class lth_core_update
+// 	{
 
-		public $plugin_slug;
-		public $version;
-		public $cache_key;
-		public $cache_allowed;
+// 		public $plugin_slug;
+// 		public $version;
+// 		public $cache_key;
+// 		public $cache_allowed;
 
-		public function __construct()
-		{
+// 		public function __construct()
+// 		{
 
-			$this->plugin_slug = plugin_basename(__DIR__);
-			$this->version = '2.0.0';
-			$this->cache_key = 'lth-core';
-			$this->cache_allowed = false;
+// 			$this->plugin_slug = plugin_basename(__DIR__);
+// 			$this->version = '2.0.0';
+// 			$this->cache_key = 'lth-core';
+// 			$this->cache_allowed = false;
 
-			add_filter('plugins_api', array($this, 'info'), 20, 3);
-			add_filter('site_transient_update_plugins', array($this, 'update'));
-			add_action('upgrader_process_complete', array($this, 'purge'), 10, 2);
-		}
+// 			add_filter('plugins_api', array($this, 'info'), 20, 3);
+// 			add_filter('site_transient_update_plugins', array($this, 'update'));
+// 			add_action('upgrader_process_complete', array($this, 'purge'), 10, 2);
+// 		}
 
-		public function request()
-		{
+// 		public function request()
+// 		{
 
-			$remote = get_transient($this->cache_key);
+// 			$remote = get_transient($this->cache_key);
 
-			if (false === $remote || !$this->cache_allowed) {
+// 			if (false === $remote || !$this->cache_allowed) {
 
-				$remote = wp_remote_get(
-					'https://github.com/TrHuan/lth/tree/main/plugin-core/updater/info.json', // đường dẫn đến thư mục chứa file plugin, json
-					array(
-						'timeout' => 10,
-						'headers' => array(
-							'Accept' => 'application/json'
-						)
-					)
-				);
+// 				$remote = wp_remote_get(
+// 					'https://github.com/TrHuan/lth/blob/0cf7fe8ecd2bfcf357e87614880864f4b930abc1/plugin-core/updater/info.json', // đường dẫn đến thư mục chứa file plugin, json
+// 					array(
+// 						'timeout' => 10,
+// 						'headers' => array(
+// 							'Accept' => 'application/json'
+// 						)
+// 					)
+// 				);
 
-				if (
-					is_wp_error($remote)
-					|| 200 !== wp_remote_retrieve_response_code($remote)
-					|| empty(wp_remote_retrieve_body($remote))
-				) {
-					return false;
-				}
+// 				if (
+// 					is_wp_error($remote)
+// 					|| 200 !== wp_remote_retrieve_response_code($remote)
+// 					|| empty(wp_remote_retrieve_body($remote))
+// 				) {
+// 					return false;
+// 				}
 
-				set_transient($this->cache_key, $remote, DAY_IN_SECONDS);
-			}
+// 				set_transient($this->cache_key, $remote, DAY_IN_SECONDS);
+// 			}
 
-			$remote = json_decode(wp_remote_retrieve_body($remote));
+// 			$remote = json_decode(wp_remote_retrieve_body($remote));
 
-			return $remote;
-		}
+// 			return $remote;
+// 		}
 
 
-		function info($res, $action, $args)
-		{
+// 		function info($res, $action, $args)
+// 		{
 
-			// print_r( $action );
-			// print_r( $args );
+// 			// print_r( $action );
+// 			// print_r( $args );
 
-			// do nothing if you're not getting plugin information right now
-			if ('plugin_information' !== $action) {
-				return $res;
-			}
+// 			// do nothing if you're not getting plugin information right now
+// 			if ('plugin_information' !== $action) {
+// 				return $res;
+// 			}
 
-			// do nothing if it is not our plugin
-			if ($this->plugin_slug !== $args->slug) {
-				return $res;
-			}
+// 			// do nothing if it is not our plugin
+// 			if ($this->plugin_slug !== $args->slug) {
+// 				return $res;
+// 			}
 
-			// get updates
-			$remote = $this->request();
+// 			// get updates
+// 			$remote = $this->request();
 
-			if (!$remote) {
-				return $res;
-			}
+// 			if (!$remote) {
+// 				return $res;
+// 			}
 
-			$res = new stdClass();
+// 			$res = new stdClass();
 
-			$res->name = $remote->name;
-			$res->slug = $remote->slug;
-			$res->version = $remote->version;
-			$res->tested = $remote->tested;
-			$res->requires = $remote->requires;
-			$res->author = $remote->author;
-			$res->author_profile = $remote->author_profile;
-			$res->download_link = $remote->download_url;
-			$res->trunk = $remote->download_url;
-			$res->requires_php = $remote->requires_php;
-			$res->last_updated = $remote->last_updated;
+// 			$res->name = $remote->name;
+// 			$res->slug = $remote->slug;
+// 			$res->version = $remote->version;
+// 			$res->tested = $remote->tested;
+// 			$res->requires = $remote->requires;
+// 			$res->author = $remote->author;
+// 			$res->author_profile = $remote->author_profile;
+// 			$res->download_link = $remote->download_url;
+// 			$res->trunk = $remote->download_url;
+// 			$res->requires_php = $remote->requires_php;
+// 			$res->last_updated = $remote->last_updated;
 
-			$res->sections = array(
-				'description' => $remote->sections->description,
-				'installation' => $remote->sections->installation,
-				'changelog' => $remote->sections->changelog
-			);
+// 			$res->sections = array(
+// 				'description' => $remote->sections->description,
+// 				'installation' => $remote->sections->installation,
+// 				'changelog' => $remote->sections->changelog
+// 			);
 
-			if (!empty($remote->banners)) {
-				$res->banners = array(
-					'low' => $remote->banners->low,
-					'high' => $remote->banners->high
-				);
-			}
+// 			if (!empty($remote->banners)) {
+// 				$res->banners = array(
+// 					'low' => $remote->banners->low,
+// 					'high' => $remote->banners->high
+// 				);
+// 			}
 
-			return $res;
-		}
+// 			return $res;
+// 		}
 
-		public function update($transient)
-		{
+// 		public function update($transient)
+// 		{
 
-			if (empty($transient->checked)) {
-				return $transient;
-			}
+// 			if (empty($transient->checked)) {
+// 				return $transient;
+// 			}
 
-			$remote = $this->request();
+// 			$remote = $this->request();
 
-			if (
-				$remote
-				&& version_compare($this->version, $remote->version, '<')
-				&& version_compare($remote->requires, get_bloginfo('version'), '<=')
-				&& version_compare($remote->requires_php, PHP_VERSION, '<')
-			) {
-				$res = new stdClass();
-				$res->slug = $this->plugin_slug;
-				$res->plugin = plugin_basename(__FILE__);
-				$res->new_version = $remote->version;
-				$res->tested = $remote->tested;
-				$res->package = $remote->download_url;
+// 			if (
+// 				$remote
+// 				&& version_compare($this->version, $remote->version, '<')
+// 				&& version_compare($remote->requires, get_bloginfo('version'), '<=')
+// 				&& version_compare($remote->requires_php, PHP_VERSION, '<')
+// 			) {
+// 				$res = new stdClass();
+// 				$res->slug = $this->plugin_slug;
+// 				$res->plugin = plugin_basename(__FILE__);
+// 				$res->new_version = $remote->version;
+// 				$res->tested = $remote->tested;
+// 				$res->package = $remote->download_url;
 
-				$transient->response[$res->plugin] = $res;
-			}
+// 				$transient->response[$res->plugin] = $res;
+// 			}
 
-			return $transient;
-		}
+// 			return $transient;
+// 		}
 
-		public function purge($upgrader, $options)
-		{
+// 		public function purge($upgrader, $options)
+// 		{
 
-			if (
-				$this->cache_allowed
-				&& 'update' === $options['action']
-				&& 'plugin' === $options['type']
-			) {
-				// just clean the cache when new plugin version is installed
-				delete_transient($this->cache_key);
-			}
-		}
-	}
+// 			if (
+// 				$this->cache_allowed
+// 				&& 'update' === $options['action']
+// 				&& 'plugin' === $options['type']
+// 			) {
+// 				// just clean the cache when new plugin version is installed
+// 				delete_transient($this->cache_key);
+// 			}
+// 		}
+// 	}
 
-	new lth_core_update();
-}
+// 	new lth_core_update();
+// }
+
+require 'plugin-update-checker-5.0/plugin-update-checker.php';
+
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+// var_dump(__FILE__);
+
+$myUpdateChecker = PucFactory::buildUpdateChecker(
+	'https://github.com/TrHuan/lth-plugin-core/',
+	__FILE__,
+	'lth-core'
+);
+
+//Set the branch that contains the stable release.
+$myUpdateChecker->setBranch('main');
+
+//Optional: If you're using a private repository, specify the access token like this:
+$myUpdateChecker->setAuthentication('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');
+
+$myUpdateChecker->getVcsApi()->enableReleaseAssets();
 
 /**
  * The core plugin class that is used to define internationalization,
