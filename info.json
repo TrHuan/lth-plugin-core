@@ -1,0 +1,21 @@
+{
+    "name": "LTH Coro",
+    "slug": "lth-core",
+    "author": "<a href='#'>LTH Core</a>",
+    "author_profile": "",
+    "version": "2.0.0",
+    "download_url": "https://github.com/TrHuan/lth-plugin-core/archive/refs/tags/v2.0.0.zip",
+    "requires": "3.0",
+    "tested": "5.8",
+    "requires_php": "5.3",
+    "last_updated": "2023-01-30 02:10:00",
+    "sections": {
+        "description": "This simple plugin does nothing, only gets updates from a custom server",
+        "installation": "Click the activate button and that's it.",
+        "changelog": "<h4>1.0 –  1 august 2021</h4><ul><li>Bug fixes.</li><li>Initital release.</li></ul>"
+    },
+    "banners": {
+        "low": "https://veoveodemo.gcodemo.com/wp-content/uploads/updater/banner-772x250.jpg",
+        "high": "https://veoveodemo.gcodemo.com/wp-content/uploads/updater/banner-1544x500.jpg"
+    }
+}
